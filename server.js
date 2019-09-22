@@ -51,9 +51,12 @@ app.get('/link/:id', (req, res) => {
     .from('chats')
     .where('hash', id)
     .then(response => {
-      console.log(response);
+      if (response[0] == undefined) {
+        res.status(404).send('Not found');
+      } else {
+        res.render('link.ejs', response[0]);
+      }
     });
-  res.sendFile(__dirname + '/public/link.html');
 });
 
 io.on('connection', socket => {
