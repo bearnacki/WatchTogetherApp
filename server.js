@@ -41,8 +41,11 @@ app.post('/register', (req, res) => {
     .returning('hash')
     .then(hash => {
       console.log(hash);
+      res.status(200).json(hash[0]);
+    })
+    .catch(err => {
+      res.status(400).send('Wrong link');
     });
-  res.status(200).json('OK');
 });
 
 app.get('/link/:id', (req, res) => {
