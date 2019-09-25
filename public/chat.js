@@ -4,26 +4,30 @@ const owner = document.getElementById('owner');
 const message = document.getElementById('chat-message');
 const button = document.getElementById('send-message');
 const feedback = document.getElementById('feedback');
+const roomId = window.location.pathname.slice(6);
 
-function onResponde(e) {
+function onSendingResponse(e) {
   e.preventDefault();
   socket.emit('chat', {
     owner: owner.value,
-    message: message.value
+    message: message.value,
+    roomId: roomId
   });
 }
 
 function onTyping(e) {
   socket.emit('typing', {
-    owner: owner.value
+    owner: owner.value,
+    roomId: roomId
   });
   if (e.keyCode == 13) {
-    onResponde(e);
+    onSendingResponse(e);
     message.value = '';
   }
 }
 
-button.addEventListener('click', onResponde);
+socket.emit('subscribe', roomId);
+button.addEventListener('click', onSendingResponse);
 message.addEventListener('keypress', onTyping);
 
 socket.on('chat', data => {

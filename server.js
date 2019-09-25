@@ -60,10 +60,13 @@ app.get('/link/:id', (req, res) => {
 });
 
 io.on('connection', socket => {
+  socket.on('subscribe', roomId => {
+    socket.join(roomId);
+  });
   socket.on('chat', data => {
-    io.sockets.emit('chat', data);
+    io.sockets.to(data.roomId).emit('chat', data);
   });
   socket.on('typing', data => {
-    socket.broadcast.emit('typing', data);
+    socket.broadcast.to(data.roomId).emit('typing', data);
   });
 });
