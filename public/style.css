@@ -5,14 +5,32 @@ body {
   margin: 0;
 }
 
+.title {
+  padding: 20px;
+  text-align: center;
+}
+
 .chat,
 .register {
   max-width: 99vw;
   margin: 10px auto;
+  padding: 20px;
   border: 1px solid #ddd;
   box-shadow: 1px 3px 5px rgba(0, 0, 0, 0.05);
   border-radius: 2px;
   background: #f9f9f9;
+}
+
+.register--button {
+  display: block;
+  width: 150px;
+  margin: 10px auto 0 auto;
+}
+
+.register--url {
+  display: block;
+  margin: auto;
+  max-width: 750px;
 }
 
 .link-hidden {
