@@ -90,3 +90,8 @@ button {
   margin-left: 10px;
   text-transform: uppercase;
 }
+
+#player {
+  width: 100vw;
+  height: 75vh;
+}
