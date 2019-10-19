@@ -4,7 +4,10 @@ const owner = document.getElementById('owner');
 const message = document.getElementById('chat-message');
 const button = document.getElementById('send-message');
 const feedback = document.getElementById('feedback');
+const synchronizer = document.getElementById('synchronize');
 const roomId = window.location.pathname.slice(6);
+const tag = document.createElement('script');
+const url = document.getElementById('player').dataset.url;
 
 function onSendingResponse(e) {
   e.preventDefault();
@@ -26,9 +29,29 @@ function onTyping(e) {
   }
 }
 
+function onPlayerReady(event) {
+  event.target.playVideo();
+}
+function onPlayerStateChange(event) {}
+function stopVideo() {
+  player.stopVideo();
+}
+
+function onSynchronize(e) {
+  e.preventDefault();
+  let duration = player.getCurrentTime();
+  let playerState = player.getPlayerState();
+  socket.emit('playing', {
+    roomId: roomId,
+    duration: duration,
+    state: playerState
+  });
+}
+
 socket.emit('subscribe', roomId);
 button.addEventListener('click', onSendingResponse);
 message.addEventListener('keypress', onTyping);
+synchronizer.addEventListener('click', onSynchronize);
 
 socket.on('chat', data => {
   let p = document.createElement('p');
@@ -46,4 +69,25 @@ socket.on('chat', data => {
 
 socket.on('typing', data => {
   feedback.textContent = `${data.owner} is typing...`;
+});
+
+tag.src = 'https://www.youtube.com/iframe_api';
+const firstScriptTag = document.getElementsByTagName('script')[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+let player;
+function onYouTubeIframeAPIReady() {
+  player = new YT.Player('player', {
+    height: '',
+    width: '',
+    videoId: url,
+    events: {
+      onReady: onPlayerReady,
+      onStateChange: onPlayerStateChange
+    }
+  });
+}
+
+socket.on('playing', data => {
+  player.seekTo(data.duration);
+  player.playVideo();
 });

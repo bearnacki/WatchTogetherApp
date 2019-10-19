@@ -1,6 +1,7 @@
 const express = require('express');
 const socket = require('socket.io');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const db = require('knex')({
   client: 'pg',
   connection: {
@@ -22,6 +23,8 @@ const io = socket(server);
 app.use(express.static('public'));
 
 app.use(bodyParser.json());
+
+app.use(cors());
 
 app.post('/register', (req, res) => {
   const { url } = req.body;
@@ -71,5 +74,8 @@ io.on('connection', socket => {
   });
   socket.on('typing', data => {
     socket.broadcast.to(data.roomId).emit('typing', data);
+  });
+  socket.on('playing', data => {
+    socket.broadcast.to(data.roomId).emit('playing', data);
   });
 });
