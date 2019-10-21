@@ -48,10 +48,11 @@ function onSynchronize(e) {
   });
 }
 
+//sending and receiving chat messages
+
 socket.emit('subscribe', roomId);
 button.addEventListener('click', onSendingResponse);
 message.addEventListener('keypress', onTyping);
-synchronizer.addEventListener('click', onSynchronize);
 
 socket.on('chat', data => {
   let p = document.createElement('p');
@@ -71,6 +72,8 @@ socket.on('typing', data => {
   feedback.textContent = `${data.owner} is typing...`;
 });
 
+//connecting with YT API
+
 tag.src = 'https://www.youtube.com/iframe_api';
 const firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
@@ -86,6 +89,10 @@ function onYouTubeIframeAPIReady() {
     }
   });
 }
+
+//sending and receiving player's state
+
+synchronizer.addEventListener('click', onSynchronize);
 
 socket.on('playing', data => {
   player.seekTo(data.duration);
